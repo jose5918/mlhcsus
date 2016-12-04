@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+<canvas id= "myCanvas" width="800" height="800" style="border:1px solid #000000;background-color:#20203C;" ></canvas>
+<script>
+//initialize var
+var earth = new Image();
+earth.src = "earth.png";
+var sun = new Image();
+sun.src = "sun.png";
+
+var distance= 0;
+var accY=0;
+var accX=0;
+var velocityAY=1.856;
+var velocityAX=0;
+
+var accY2=0;
+var accX2=0;
+var velocityAY2=0;
+var velocityAX2=0;
+
+//canvas ready
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+var one = new object(100,332.9,5000);
+var two = new object(295.7,295.7,160000);
+setInterval(loop, 10);
+
+function loop(){
+calculate(one,two);
+ctx.clearRect(0,0,c.width,c.height);
+cDraw(one, earth);
+cDraw(two, sun);
+grav(one,two);
+console.log(distance);
+}
+
+function grav(a,b){
+	velocityAY=velocityAY+accY;
+	a.cy+=velocityAY;
+	velocityAX=velocityAX+accX;
+	a.cx+=velocityAX;
+	
+	velocityAY2=velocityAY2+accY2;
+	b.cy-=velocityAY2;
+	velocityAX2=velocityAX2+accX2;
+	b.cx-=velocityAX2;
+}
+function calculate(a,b){
+	distance = Math.sqrt(Math.pow(a.cx-b.cx,2)+Math.pow(a.cy-b.cy,2));
+	distanceY = Math.abs(a.cy-b.cy);
+	distanceX = Math.abs(a.cx-b.cx);
+	acc =.005*(b.m)/Math.pow(distance,2);
+	acc2 = .005*(a.m)/Math.pow(distance,2);
+	
+	accY=acc*Math.cos(Math.atan(distanceX/distanceY));
+	accX = acc*Math.sin(Math.atan(distanceX/distanceY));
+	
+	//accY2=acc2*Math.cos(Math.atan(distanceX/distanceY));
+	//accX2=acc2*Math.sin(Math.atan(distanceX/distanceY));
+	
+	if(a.cy>b.cy){
+		//accY2= accY2*-1;
+		accY= accY*-1;
+	}
+	if(a.cx>b.cx){
+		//accX2= accX2*-1;
+		accX= accX*-1;
+	}
+}
+
+//constructor for objects in the space
+function object(xpos, ypos, mass){
+	this.s= Math.pow(mass,1/3);
+	this.x= xpos;
+	this.cx=xpos+this.s;
+	this.y= ypos;
+	this.cy=ypos+this.s;
+	this.m= mass;
+	
+}
+
+//Draws an object with size determined by mass
+function cDraw(object, image){
+	ctx.drawImage(image,object.cx, object.cy, object.s*2, object.s*2)
+}
+
+
+
+
+
+</script>
+
+</body>
+</html>
